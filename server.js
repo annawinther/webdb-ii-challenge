@@ -13,7 +13,7 @@ function createNewCar({ vin, make, model, mileage, transmission_type, transmissi
     return db('cars').insert({ vin, make, model, mileage, transmission_type, transmission_style })
 }
 
-server.get('/users', async (req, res) => {
+server.get('/cars', async (req, res) => {
     try {
         const cars = await getAllCars();
         res.status(200).json(cars)
