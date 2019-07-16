@@ -1,33 +1,33 @@
 const express = require('express');
 
 const server = express();
-const db = require('./data/dbConfig.js');
-
+// const db = require('./data/dbConfig.js');
+const db = require('./data/dbQueries')
 server.use(express.json());
 
-function getAllCars() {
-    return db('cars');
-}
+// function getAllCars() {
+//     return db('cars');
+// }
 
-function getCarById(id){
-    return db('cars').where({ id }).first();
-}
+// function getCarById(id){
+//     return db('cars').where({ id }).first();
+// }
 
-function createNewCar({ vin, make, model, mileage, transmission_type, transmission_style }){
-    return db('cars').insert({ vin, make, model, mileage, transmission_type, transmission_style })
-}
+// function createNewCar({ vin, make, model, mileage, transmission_type, transmission_style }){
+//     return db('cars').insert({ vin, make, model, mileage, transmission_type, transmission_style })
+// }
 
-function deleteCar(id){
-    return db('cars').where({ id }).del();
-}
+// function deleteCar(id){
+//     return db('cars').where({ id }).del();
+// }
 
-function updateCar(id, { vin, make, model, mileage, transmission_type, transmission_style }){
-    return db('cars').where({ id }).update({ vin, make, model, mileage, transmission_type, transmission_style });
-}
+// function updateCar(id, { vin, make, model, mileage, transmission_type, transmission_style }){
+//     return db('cars').where({ id }).update({ vin, make, model, mileage, transmission_type, transmission_style });
+// }
 
 server.get('/cars', async (req, res) => {
     try {
-        const cars = await getAllCars();
+        const cars = await db.getAllCars();
         res.status(200).json(cars)
     } catch (error) {
         res.status(500).json({message: 'could not get all cars' })
@@ -37,7 +37,7 @@ server.get('/cars', async (req, res) => {
 server.get('/cars/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const car = await getCarById(id);
+        const car = await db.getCarById(id);
         if (car) {
             res.status(200).json(car)
         } else {
@@ -52,9 +52,9 @@ server.get('/cars/:id', async (req, res) => {
 server.post('/cars', async (req, res) => {
     try {
         // const carsData = req.body;
-        const createdCarId = await createNewCar(req.body);
-        const newCar = await getCarById(createdCarId[0]);
-        res.status(201).json(newCar[0]);
+        const createdCarId = await db.createNewCar(req.body);
+        const newCar = await db.getCarById(createdCarId[0]);
+        res.status(201).json(newCar);
     } catch (error) {
         res.status(500).json({ message: 'could not create new car' })
     }
@@ -62,7 +62,7 @@ server.post('/cars', async (req, res) => {
 
 server.delete('/cars/:id', async (req, res) => {
     try {
-        const deletedCar = await deleteCar(req.params.id);
+        const deletedCar = await db.deleteCar(req.params.id);
         res.status(200).json({message: `${deletedCar} car has been deleted`})
     } catch (error) {
         res.status(500).json({ message: 'could not delete this car' })
@@ -72,8 +72,8 @@ server.delete('/cars/:id', async (req, res) => {
 server.put('/cars/:id', async (req, res) => {
     try {
         const { vin, make, model, mileage, transmission_type, transmission_style } = req.body;
-        const result = await updateCar(req.params.id, { vin, make, model, mileage, transmission_type, transmission_style });
-        const carUpdated = await getCarById(req.params.id);
+        const result = await db.updateCar(req.params.id, { vin, make, model, mileage, transmission_type, transmission_style });
+        const carUpdated = await db.getCarById(req.params.id);
         res.status(200).json(carUpdated)
     } catch (error) {
         res.status(500).json({ message: 'could not update car'})
