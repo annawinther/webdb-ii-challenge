@@ -17,6 +17,9 @@ function createNewCar({ vin, make, model, mileage, transmission_type, transmissi
     return db('cars').insert({ vin, make, model, mileage, transmission_type, transmission_style })
 }
 
+function deleteCar(id){
+    return db('cars').where({ id }).del();
+}
 server.get('/cars', async (req, res) => {
     try {
         const cars = await getAllCars();
@@ -40,6 +43,7 @@ server.get('/cars/:id', async (req, res) => {
         res.status(500).json({ message: 'could not get car by id' })
     }
 })
+
 server.post('/cars', async (req, res) => {
     try {
         // const carsData = req.body;
@@ -51,7 +55,14 @@ server.post('/cars', async (req, res) => {
     }
 })
 
-
+server.delete('/cars/:id', async (req, res) => {
+    try {
+        const deletedCar = await deleteCar(req.params.id);
+        res.status(200).json({message: `${deletedCar} car has been deleted`})
+    } catch (error) {
+        res.status(500).json({ message: 'could not delete this car' })
+    }
+})
 
 
 server.get('/', async (req, res, next) => {
