@@ -28,9 +28,10 @@ server.get('/cars', async (req, res) => {
 
 server.get('/cars/:id', async (req, res) => {
     try {
-        const car = await getCarById(req.params.id);
-        if (car) {
-            res.status(200).json(car)
+        const id  = req.params.id;
+        const car = await getCarById(id);
+        if (id) {
+            res.status(200).json(car[0])
         } else {
             res.status(404).json({ message: 'car with that id is not found' })
         }
