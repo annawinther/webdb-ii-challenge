@@ -20,6 +20,11 @@ function createNewCar({ vin, make, model, mileage, transmission_type, transmissi
 function deleteCar(id){
     return db('cars').where({ id }).del();
 }
+
+function updateCar(id, { vin, make, model, mileage, transmission_type, transmission_style }){
+    return db('cars').where({ id }).update({ vin, make, model, mileage, transmission_type, transmission_style });
+}
+
 server.get('/cars', async (req, res) => {
     try {
         const cars = await getAllCars();
@@ -64,6 +69,16 @@ server.delete('/cars/:id', async (req, res) => {
     }
 })
 
+server.put('/cars/:id', async (req, res) => {
+    try {
+        const { vin, make, model, mileage, transmission_type, transmission_style } = req.body;
+        const result = await updateCar(req.params.id, { vin, make, model, mileage, transmission_type, transmission_style });
+        const carUpdated = await getCarById(req.params.id);
+        res.status(200).json(carUpdated)
+    } catch (error) {
+        res.status(500).json({ message: 'could not update car'})
+    }
+})
 
 server.get('/', async (req, res, next) => {
   try {
