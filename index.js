@@ -1,25 +1,5 @@
-const express = require('express');
+const server = require('./server.js');
 
-const app = express();
-
-app.use(express.json());
-
-app.get('/', async (req, res, next) => {
-  try {
-    res.json('success');
-  } catch (error) {
-    next(new Error('argh!'));
-  }
-});
-
-app.use((err, req, res, next) => { // eslint-disable-line
-  console.error('ERROR:', err);
-  res.status(500).json({
-    message: err.message,
-    stack: err.stack,
-  });
-});
-
-app.listen(4002, () => {
-  console.log('listening on 4002');
+server.listen(4002, () => {
+  console.log(`Listening on port 4002...`);
 });
