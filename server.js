@@ -21,7 +21,7 @@ server.get('/cars', async (req, res) => {
     try {
         const cars = await getAllCars();
         res.status(200).json(cars)
-    } catch {
+    } catch (error) {
         res.status(500).json({message: 'could not get all cars' })
     }
 })
@@ -35,7 +35,7 @@ server.get('/cars/:id', async (req, res) => {
             res.status(404).json({ message: 'car with that id is not found' })
         }
         // res.status(200).json(car)
-    } catch {
+    } catch (error) {
         res.status(500).json({ message: 'could not get car by id' })
     }
 })
@@ -43,12 +43,14 @@ server.post('/cars', async (req, res) => {
     try {
         // const carsData = req.body;
         const createdCarId = await createNewCar(req.body);
-        const arrayOfCars = await getCarById(createdCarId[0]);
-        res.status(201).json(arrayOfCars[0]);
+        const newCar = await getCarById(createdCarId[0]);
+        res.status(201).json(newCar[0]);
     } catch (error) {
         res.status(500).json({ message: 'could not create new car' })
     }
 })
+
+
 
 
 server.get('/', async (req, res, next) => {
