@@ -10,7 +10,7 @@ function getAllCars() {
 }
 
 function getCarById(id){
-    return db('cars').where({ id });
+    return db('cars').where({ id }).first();
 }
 
 function createNewCar({ vin, make, model, mileage, transmission_type, transmission_style }){
@@ -28,10 +28,10 @@ server.get('/cars', async (req, res) => {
 
 server.get('/cars/:id', async (req, res) => {
     try {
-        const id  = req.params.id;
+        const { id } = req.params;
         const car = await getCarById(id);
-        if (id) {
-            res.status(200).json(car[0])
+        if (car) {
+            res.status(200).json(car)
         } else {
             res.status(404).json({ message: 'car with that id is not found' })
         }
